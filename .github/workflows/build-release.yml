@@ -65,6 +65,6 @@ jobs:
           APK_FILE="AutoExpandNotifications-${VERSION}.apk"
 
           gh release create "${TAG}" "$APK_FILE" \
-            --repo Xposed-Modules-Repo/com.autoexpand.xposed \
+            --repo Xposed-Modules-Repo/io.github.kvmy666.autoexpand \
             --title "v${VERSION}" \
             --notes "Release v${VERSION} - See [changelog](https://github.com/kvmy666/-AutoExpandNotifications/releases/tag/${TAG})"
