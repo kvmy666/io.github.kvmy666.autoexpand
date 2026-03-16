@@ -17,9 +17,9 @@ An LSPosed/Xposed module that enhances notification behavior and adds a Gboard k
 
 ## Screenshots
 
-| Expanded Heads-Up | Notification Shade | Settings |
-|---|---|---|
-| <img src="https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/headsup-expanded.jpg" width="250"/> | <img src="https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/notification-shade.jpg" width="250"/> | <img src="https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/settings.jpg" width="250"/> |
+![Expanded Heads-Up](https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/headsup-expanded.jpg)
+![Notification Shade](https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/notification-shade.jpg)
+![Settings](https://raw.githubusercontent.com/kvmy666/-AutoExpandNotifications/main/screenshots/settings.jpg)
 
 ## Features
 
