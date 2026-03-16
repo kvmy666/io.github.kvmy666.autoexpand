@@ -63,8 +63,13 @@ jobs:
           TAG="${{ steps.version.outputs.tag }}"
           VERSION="${{ steps.version.outputs.name }}"
           APK_FILE="AutoExpandNotifications-${VERSION}.apk"
+          REPO="Xposed-Modules-Repo/io.github.kvmy666.autoexpand"
 
-          gh release create "${TAG}" "$APK_FILE" \
-            --repo Xposed-Modules-Repo/io.github.kvmy666.autoexpand \
-            --title "v${VERSION}" \
-            --notes "Release v${VERSION} - See [changelog](https://github.com/kvmy666/-AutoExpandNotifications/releases/tag/${TAG})"
+          if gh release view "${TAG}" --repo "$REPO" > /dev/null 2>&1; then
+            gh release upload "${TAG}" "$APK_FILE" --repo "$REPO" --clobber
+          else
+            gh release create "${TAG}" "$APK_FILE" \
+              --repo "$REPO" \
+              --title "v${VERSION}" \
+              --notes "Release v${VERSION} - See [changelog](https://github.com/kvmy666/-AutoExpandNotifications/releases/tag/${TAG})"
+          fi
