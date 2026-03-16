@@ -28,6 +28,27 @@
     <!-- App list -->
     <string name="search_hint">Search apps…</string>
 
+    <!-- Keyboard Enhancer -->
+    <string name="keyboard_enhancer_title">Keyboard Enhancer</string>
+    <string name="keyboard_enhancer_enabled_title">Enable keyboard toolbar</string>
+    <string name="keyboard_enhancer_enabled_desc">Inject a toolbar below Gboard — force-stop Gboard to apply changes</string>
+    <string name="keyboard_toolbar_height_title">Toolbar height</string>
+    <string name="keyboard_toolbar_height_desc">Relative to key height (1.0× = same height as a key row)</string>
+    <string name="keyboard_buttons_title">TOOLBAR BUTTONS</string>
+    <string name="btn_clipboard_title">📋  Clipboard</string>
+    <string name="btn_clipboard_desc">Tap to open clipboard history popup</string>
+    <string name="btn_selectall_title">⬛  Select all</string>
+    <string name="btn_selectall_desc">Tap = select last word · Long-press = select all</string>
+    <string name="btn_cursor_title">← →  Cursor navigation</string>
+    <string name="btn_cursor_desc">Jump cursor to start or end of field</string>
+    <string name="btn_shortcut_title">★  Text shortcut</string>
+    <string name="btn_shortcut_desc">Tap / long-press to insert preset text</string>
+    <string name="keyboard_shortcut1_title">Shortcut 1 — tap</string>
+    <string name="keyboard_shortcut2_title">Shortcut 2 — long press</string>
+    <string name="keyboard_shortcut2_desc">Leave empty to disable long-press shortcut</string>
+    <string name="keyboard_clipboard_max_title">Max clipboard entries</string>
+    <string name="keyboard_clipboard_max_desc">Oldest non-pinned entries are pruned when limit is reached</string>
+
     <!-- Snackbar -->
     <string name="reboot_required">Reboot required for changes to take effect</string>
 </resources>

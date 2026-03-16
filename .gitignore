@@ -21,7 +21,9 @@ keystore.properties
 # Claude Code
 .claude/
 CLAUDE.md
+CLAUDE.MD
 **/CLAUDE.md
+**/CLAUDE.MD
 
 # OS files
 *.DS_Store

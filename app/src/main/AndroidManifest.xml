@@ -38,7 +38,7 @@
         <!-- Module description -->
         <meta-data
             android:name="xposeddescription"
-            android:value="Notification &amp; System Tweaks for OxygenOS — auto-expand notifications, disable heads-up popup, mute back gesture haptic" />
+            android:value="Notification &amp; System Tweaks + Keyboard Enhancer for OxygenOS — auto-expand notifications, disable heads-up popup, mute back gesture haptic, Gboard toolbar with clipboard manager" />
 
         <!-- Minimum Xposed API version -->
         <meta-data

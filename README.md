@@ -1,4 +1,7 @@
-# AutoExpandNotifications
+
+#
+
+AutoExpandNotifications
 
 Notification & System Tweaks for OxygenOS
 
@@ -10,7 +13,7 @@ Notification & System Tweaks for OxygenOS
 
 ## About
 
-An LSPosed/Xposed module that enhances notification behavior on OnePlus devices running OxygenOS. Auto-expand notifications everywhere, block accidental popup launches from heads-up swipes, and disable the back gesture vibration.
+An LSPosed/Xposed module that enhances notification behavior and adds a Gboard keyboard toolbar on OnePlus devices running OxygenOS. Auto-expand notifications everywhere, block accidental popup launches, disable back gesture haptic, ungroup notifications, and get a powerful clipboard + shortcut toolbar in your keyboard.
 
 ## Screenshots
 
@@ -32,11 +35,24 @@ Notifications on the lock screen appear expanded by default, showing full conten
 ### Disable Heads-Up Popup
 Prevents the mini-window/freeform launch when swiping down on a heads-up notification. Instead, swiping down toggles between expanded and collapsed views.
 
+### Ungroup Notifications
+Shows each notification as a separate card instead of grouping them by app. Never miss a message buried inside a collapsed group.
+
 ### Mute Back Gesture Haptic
 Disables the vibration feedback when using the back swipe gesture, while keeping all other haptic feedback intact.
 
 ### App Exclusion List
 Choose specific apps whose notifications should NOT be auto-expanded. Exclusions apply across all three notification modes (shade, heads-up, and lock screen).
+
+### Keyboard Enhancer (Gboard Toolbar) — New in v1.2.0
+Injects a customizable toolbar below Gboard with four buttons:
+
+- **Clipboard** — Tap to open a scrollable clipboard history popup. Entries are pinned/unpinned with a long-press. History is stored locally with a configurable size limit.
+- **Select All** — Tap to select the last word; long-press to select all text in the field.
+- **Cursor Navigation** — Jump the cursor to the start or end of the text field.
+- **Text Shortcut** — Tap/long-press to insert preset text snippets.
+
+Toolbar height is adjustable via a slider in the settings app. Each button can be individually enabled or disabled.
 
 ## Requirements
 
@@ -50,7 +66,7 @@ Choose specific apps whose notifications should NOT be auto-expanded. Exclusions
 1. Download the latest APK from [Releases](https://github.com/kvmy666/-AutoExpandNotifications/releases)
 2. Install the APK
 3. Open **LSPosed Manager** > Modules > Enable **AutoExpandNotifications**
-4. Ensure **System UI** is checked in the module scope
+4. Ensure **System UI** and **Gboard** are checked in the module scope
 5. **Reboot** your device
 6. Open the app to configure features
 
@@ -73,6 +89,9 @@ A: The module uses extensive error handling (try-catch on all hooks). If somethi
 **Q: Can I use this with Oxygen Customizer?**
 A: Yes, they should work together without conflicts since they hook different parts of SystemUI.
 
+**Q: The keyboard toolbar doesn't appear after enabling it.**
+A: Force-stop Gboard after enabling the toolbar in the settings app, then open any text field.
+
 ## Contributing
 
 Contributions are welcome! If you've tested this on a different OnePlus device or OxygenOS version, please open an issue to report compatibility.
@@ -87,4 +106,4 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 ## Disclaimer
 
-This module modifies SystemUI behavior through Xposed hooks. While extensively tested, I am not responsible for any issues that may arise from using this module. Always maintain a backup and have bootloop protection in place.
+This module modifies SystemUI and Gboard behavior through Xposed hooks. While extensively tested, I am not responsible for any issues that may arise from using this module. Always maintain a backup and have bootloop protection in place.

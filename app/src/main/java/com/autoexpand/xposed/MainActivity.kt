@@ -21,11 +21,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
@@ -37,6 +40,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -113,6 +118,20 @@ class MainActivity : ComponentActivity() {
         if (!prefs.contains("ungroup_notifications_enabled")) {
             prefs.edit().putBoolean("ungroup_notifications_enabled", true).apply()
         }
+        if (!prefs.contains("keyboard_enhancer_enabled")) {
+            prefs.edit()
+                .putBoolean("keyboard_enhancer_enabled", true)
+                .putString("toolbar_height_multiplier", "1.0")
+                .putString("shortcut_text_1", "")
+                .putString("shortcut_text_2", "")
+                .putString("clipboard_max_entries", "500")
+                .putBoolean("btn_clipboard_enabled", true)
+                .putBoolean("btn_selectall_enabled", true)
+                .putBoolean("btn_cursor_enabled", true)
+                .putBoolean("btn_shortcut_enabled", true)
+                .apply()
+        }
+
         makePrefsWorldReadable(this)
 
         setContent {
@@ -145,6 +164,17 @@ private fun SettingsScreen(prefs: SharedPreferences) {
     var ungroupEnabled by remember { mutableStateOf(prefs.getBoolean("ungroup_notifications_enabled", true)) }
     var excludedCount by remember { mutableIntStateOf(prefs.getStringSet("excluded_apps", emptySet())?.size ?: 0) }
 
+    // Keyboard Enhancer
+    var kbEnhancerEnabled by remember { mutableStateOf(prefs.getBoolean("keyboard_enhancer_enabled", true)) }
+    var toolbarMultiplier by remember { mutableFloatStateOf(prefs.getString("toolbar_height_multiplier", "1.0")?.toFloatOrNull() ?: 1.0f) }
+    var shortcut1 by remember { mutableStateOf(prefs.getString("shortcut_text_1", "") ?: "") }
+    var shortcut2 by remember { mutableStateOf(prefs.getString("shortcut_text_2", "") ?: "") }
+    var clipboardMaxEntries by remember { mutableStateOf(prefs.getString("clipboard_max_entries", "500") ?: "500") }
+    var btnClipboardEnabled by remember { mutableStateOf(prefs.getBoolean("btn_clipboard_enabled", true)) }
+    var btnSelectAllEnabled by remember { mutableStateOf(prefs.getBoolean("btn_selectall_enabled", true)) }
+    var btnCursorEnabled by remember { mutableStateOf(prefs.getBoolean("btn_cursor_enabled", true)) }
+    var btnShortcutEnabled by remember { mutableStateOf(prefs.getBoolean("btn_shortcut_enabled", true)) }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -163,6 +193,11 @@ private fun SettingsScreen(prefs: SharedPreferences) {
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(rebootMsg)
         }
+    }
+
+    fun onStringPref(key: String, value: String) {
+        prefs.edit().putString(key, value).apply()
+        MainActivity.makePrefsWorldReadable(context)
     }
 
     Scaffold(
@@ -278,6 +313,118 @@ private fun SettingsScreen(prefs: SharedPreferences) {
                     )
                 }
             }
+
+            // Keyboard Enhancer
+            Card {
+                Column(modifier = Modifier.padding(vertical = 4.dp)) {
+                    Text(
+                        text = stringResource(R.string.keyboard_enhancer_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    // Master toggle
+                    ToggleRow(
+                        title = stringResource(R.string.keyboard_enhancer_enabled_title),
+                        description = stringResource(R.string.keyboard_enhancer_enabled_desc),
+                        checked = kbEnhancerEnabled,
+                        onCheckedChange = { kbEnhancerEnabled = it; onToggle("keyboard_enhancer_enabled", it) }
+                    )
+
+                    // Toolbar height slider
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                        Text(
+                            text = stringResource(R.string.keyboard_toolbar_height_title) + ": ${"%.1f".format(toolbarMultiplier)}×",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.keyboard_toolbar_height_desc),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Slider(
+                            value = toolbarMultiplier,
+                            onValueChange = { toolbarMultiplier = it },
+                            onValueChangeFinished = { onStringPref("toolbar_height_multiplier", toolbarMultiplier.toString()) },
+                            valueRange = 0.5f..2.0f,
+                            steps = 29
+                        )
+                    }
+
+                    // Buttons section header
+                    Text(
+                        text = stringResource(R.string.keyboard_buttons_title),
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    ToggleRow(
+                        title = stringResource(R.string.btn_clipboard_title),
+                        description = stringResource(R.string.btn_clipboard_desc),
+                        checked = btnClipboardEnabled,
+                        onCheckedChange = { btnClipboardEnabled = it; onToggle("btn_clipboard_enabled", it) }
+                    )
+                    ToggleRow(
+                        title = stringResource(R.string.btn_selectall_title),
+                        description = stringResource(R.string.btn_selectall_desc),
+                        checked = btnSelectAllEnabled,
+                        onCheckedChange = { btnSelectAllEnabled = it; onToggle("btn_selectall_enabled", it) }
+                    )
+                    ToggleRow(
+                        title = stringResource(R.string.btn_cursor_title),
+                        description = stringResource(R.string.btn_cursor_desc),
+                        checked = btnCursorEnabled,
+                        onCheckedChange = { btnCursorEnabled = it; onToggle("btn_cursor_enabled", it) }
+                    )
+                    ToggleRow(
+                        title = stringResource(R.string.btn_shortcut_title),
+                        description = stringResource(R.string.btn_shortcut_desc),
+                        checked = btnShortcutEnabled,
+                        onCheckedChange = { btnShortcutEnabled = it; onToggle("btn_shortcut_enabled", it) }
+                    )
+
+                    // Shortcut texts (only shown when shortcut button is enabled)
+                    if (btnShortcutEnabled) {
+                        OutlinedTextField(
+                            value = shortcut1,
+                            onValueChange = { shortcut1 = it; onStringPref("shortcut_text_1", it) },
+                            label = { Text(stringResource(R.string.keyboard_shortcut1_title)) },
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            singleLine = false,
+                            maxLines = 3
+                        )
+                        OutlinedTextField(
+                            value = shortcut2,
+                            onValueChange = { shortcut2 = it; onStringPref("shortcut_text_2", it) },
+                            label = { Text(stringResource(R.string.keyboard_shortcut2_title)) },
+                            supportingText = { Text(stringResource(R.string.keyboard_shortcut2_desc)) },
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            singleLine = false,
+                            maxLines = 3
+                        )
+                    }
+
+                    // Clipboard settings (only shown when clipboard button is enabled)
+                    if (btnClipboardEnabled) {
+                        OutlinedTextField(
+                            value = clipboardMaxEntries,
+                            onValueChange = {
+                                clipboardMaxEntries = it.filter { c -> c.isDigit() }
+                                onStringPref("clipboard_max_entries", clipboardMaxEntries)
+                            },
+                            label = { Text(stringResource(R.string.keyboard_clipboard_max_title)) },
+                            supportingText = { Text(stringResource(R.string.keyboard_clipboard_max_desc)) },
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).padding(bottom = 8.dp),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true
+                        )
+                    }
+                }
+            }
+
+
         }
     }
 }

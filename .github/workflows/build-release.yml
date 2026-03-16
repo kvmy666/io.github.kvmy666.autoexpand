@@ -3,7 +3,7 @@ name: Build Release APK
 on:
   push:
     tags:
-      - 'v*'
+      - '[0-9]*-*'   # matches VersionCode-VersionName format e.g. 5-1.2.0
 
 permissions:
   contents: write
@@ -35,9 +35,14 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: chmod +x ./gradlew && ./gradlew assembleRelease
 
-      - name: Get version name
+      - name: Get version name (strip versionCode prefix)
         id: version
-        run: echo "name=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Tag format: VersionCode-VersionName (e.g. 5-1.2.0)
+          VERSION_NAME="${TAG#*-}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "name=${VERSION_NAME}" >> "$GITHUB_OUTPUT"
 
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release.apk AutoExpandNotifications-${{ steps.version.outputs.name }}.apk
@@ -45,6 +50,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: v${{ steps.version.outputs.name }}
           files: AutoExpandNotifications-${{ steps.version.outputs.name }}.apk
           generate_release_notes: true
 
@@ -53,10 +60,11 @@ jobs:
           GH_TOKEN: ${{ secrets.XPOSED_REPO_TOKEN }}
         if: env.GH_TOKEN != ''
         run: |
+          TAG="${{ steps.version.outputs.tag }}"
           VERSION="${{ steps.version.outputs.name }}"
           APK_FILE="AutoExpandNotifications-${VERSION}.apk"
 
-          gh release create "v${VERSION}" "$APK_FILE" \
+          gh release create "${TAG}" "$APK_FILE" \
             --repo Xposed-Modules-Repo/com.autoexpand.xposed \
             --title "v${VERSION}" \
-            --notes "Release v${VERSION} - See [changelog](https://github.com/kvmy666/-AutoExpandNotifications/releases/tag/v${VERSION})"
+            --notes "Release v${VERSION} - See [changelog](https://github.com/kvmy666/-AutoExpandNotifications/releases/tag/${TAG})"
